@@ -7,33 +7,33 @@
 ## Pages
 
 ### בית
-https://example.com
+https://hamaginim-shel-loren.zappy5.app
 A business focused on MMA (Mixed Martial Arts) protective gear and equipment. The brand operates in the combat sports and martial arts niche, catering to fighte
 
 ### שירותים
-https://example.com/services
+https://hamaginim-shel-loren.zappy5.app/services
 שירותים | המגנים של לורן. martial arts gloves
 
 ### אודות
-https://example.com/about
+https://hamaginim-shel-loren.zappy5.app/about
 אודות | המגנים של לורן. martial arts gloves
 
 ### צור קשר
-https://example.com/contact
+https://hamaginim-shel-loren.zappy5.app/contact
 צור קשר | המגנים של לורן. martial arts gloves
 
 ## Legal & Policy
 
 ### Privacy Policy
-https://example.com/privacy
+https://hamaginim-shel-loren.zappy5.app/privacy
 Information about how user data is collected, stored, and protected.
 
 ### Terms & Conditions
-https://example.com/terms
+https://hamaginim-shel-loren.zappy5.app/terms
 Legal terms describing service usage, rights, and policies.
 
 ### Accessibility Statement
-https://example.com/accessibility
+https://hamaginim-shel-loren.zappy5.app/accessibility
 Information about WCAG compliance and accessibility features.
 
 ---
@@ -46,8 +46,8 @@ Information about WCAG compliance and accessibility features.
 - Address: Ginat Egoz St, Pardes Hanna-Karkur, Defenders of Lauren , 24723, ישראל
 
 ### Contact form
-- URL: https://example.com/contact
-- Endpoint: https://example.com/api/email/contact-form
+- URL: https://hamaginim-shel-loren.zappy5.app/contact
+- Endpoint: https://hamaginim-shel-loren.zappy5.app/api/email/contact-form
 - Method: POST
 - Content-Type: application/json
 - Fields:
@@ -79,6 +79,6 @@ Sports Equipment & Martial Arts
 
 # Machine-readable feeds
 
-- Sitemap (XML): https://example.com/sitemap.xml
-- Robots: https://example.com/robots.txt
-- Flattened page text (for LLMs): https://example.com/llms-full.txt
+- Sitemap (XML): https://hamaginim-shel-loren.zappy5.app/sitemap.xml
+- Robots: https://hamaginim-shel-loren.zappy5.app/robots.txt
+- Flattened page text (for LLMs): https://hamaginim-shel-loren.zappy5.app/llms-full.txt
