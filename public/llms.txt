@@ -1,0 +1,81 @@
+# המגנים של לורן — Generative Engine Optimization Map
+
+> A business focused on MMA (Mixed Martial Arts) protective gear and equipment. The brand operates in the combat sports and martial arts niche, catering to fighters and athletes who need quality protective equipment for training and competition.
+
+---
+
+## Pages
+
+### בית
+https://example.com
+A business focused on MMA (Mixed Martial Arts) protective gear and equipment. The brand operates in the combat sports and martial arts niche, catering to fighte
+
+### שירותים
+https://example.com/services
+שירותים | המגנים של לורן. martial arts gloves
+
+### אודות
+https://example.com/about
+אודות | המגנים של לורן. martial arts gloves
+
+### צור קשר
+https://example.com/contact
+צור קשר | המגנים של לורן. martial arts gloves
+
+## Legal & Policy
+
+### Privacy Policy
+https://example.com/privacy
+Information about how user data is collected, stored, and protected.
+
+### Terms & Conditions
+https://example.com/terms
+Legal terms describing service usage, rights, and policies.
+
+### Accessibility Statement
+https://example.com/accessibility
+Information about WCAG compliance and accessibility features.
+
+---
+
+## How to Contact Us
+
+- (No contact details configured yet.)
+
+### Contact form
+- URL: https://example.com/contact
+- Endpoint: https://example.com/api/email/contact-form
+- Method: POST
+- Content-Type: application/json
+- Fields:
+  - `name` (text, required)
+  - `phone` (tel, required)
+  - `email` (email, required)
+  - `message` (textarea, required)
+  - `privacy_consent` (checkbox, required)
+
+---
+
+# Business Context (for LLM understanding)
+
+## About המגנים של לורן
+A business focused on MMA (Mixed Martial Arts) protective gear and equipment. The brand operates in the combat sports and martial arts niche, catering to fighters and athletes who need quality protective equipment for training and competition.
+
+## Services/Products
+- מגני MMA
+
+## Target Audience
+- צעירים המתאמנים ב-MMA
+- הורים לילדים המתאמנים ב-MMA
+- לוחמי MMA מקצועיים
+
+## Industry
+Sports Equipment & Martial Arts
+
+---
+
+# Machine-readable feeds
+
+- Sitemap (XML): https://example.com/sitemap.xml
+- Robots: https://example.com/robots.txt
+- Flattened page text (for LLMs): https://example.com/llms-full.txt
