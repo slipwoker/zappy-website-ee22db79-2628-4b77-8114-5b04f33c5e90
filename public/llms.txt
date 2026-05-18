@@ -40,7 +40,10 @@ Information about WCAG compliance and accessibility features.
 
 ## How to Contact Us
 
-- (No contact details configured yet.)
+- Email: loren250814@gmail.com
+- Phone: 0533816566
+- Phone (tel): tel:0533816566
+- Address: Ginat Egoz St, Pardes Hanna-Karkur, Defenders of Lauren , 24723, ישראל
 
 ### Contact form
 - URL: https://example.com/contact
