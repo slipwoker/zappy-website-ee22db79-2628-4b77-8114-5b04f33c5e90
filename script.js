@@ -1590,11 +1590,11 @@ window.onload = function() {
 /* END ZAPPY_PUBLISHED_LIGHTBOX_RUNTIME */
 
 
-/* ZAPPY_PUBLISHED_ZOOM_WRAPPER_RUNTIME */
+/* ZAPPY_PUBLISHED_ZOOM_WRAPPER_RUNTIME_V2 */
 (function(){
   try {
-    if (window.__zappyPublishedZoomInit) return;
-    window.__zappyPublishedZoomInit = true;
+    if (window.__zappyPublishedZoomInitV2) return;
+    window.__zappyPublishedZoomInitV2 = true;
 
     function isHeroBgWrapper(wrapper) {
       var img = wrapper.querySelector('img');
@@ -1624,6 +1624,22 @@ window.onload = function() {
         return { w: 100, h: 100 };
       if (imgA >= contA) return { w: (imgA / contA) * 100, h: 100 };
       return { w: 100, h: (contA / imgA) * 100 };
+    }
+
+    function normalizeInsertedZoomParent(wrapper) {
+      try {
+        var parent = wrapper && wrapper.parentElement;
+        if (!parent) return;
+        var parentClass = (parent.className || '').toString();
+        var isInserted = / zappy-inserted-element |^zappy-inserted-element | zappy-inserted-element$|^zappy-inserted-element$/.test(' ' + parentClass + ' ');
+        if (!isInserted) return;
+        parent.style.setProperty('width', '100%', 'important');
+        parent.style.setProperty('max-width', '100%', 'important');
+        parent.style.setProperty('height', 'auto', 'important');
+        parent.style.setProperty('min-height', '0', 'important');
+        parent.style.setProperty('max-height', 'none', 'important');
+        parent.setAttribute('data-zappy-inserted-zoom-parent-normalized', '1');
+      } catch (_e) {}
     }
 
     // FULL-BLEED FIRST-CHILD MEDIA: when the wrapper's parent (the image-wrap)
@@ -1884,6 +1900,7 @@ window.onload = function() {
       var widthMode = wrapper.getAttribute('data-zappy-zoom-wrapper-width-mode');
       if (widthMode === 'full') return;
       if (isHeroBgWrapper(wrapper)) return;
+      normalizeInsertedZoomParent(wrapper);
 
       var isMobile = window.innerWidth <= 768;
       if (isMobile) {
@@ -4799,6 +4816,119 @@ function fixContrast(){
   setTimeout(patch, 250);
   setTimeout(patch, 1500);
 })();
+/* ZAPPY_CHECKOUT_FOCUS_UX_V2 */
+(function(){
+  if (window.__zappyCheckoutFocusUX >= 2) return;
+  window.__zappyCheckoutFocusUX = 2;
+
+  var CSS =
+    'body.zappy-cart-open #cc-main,body.zappy-cart-open #zappy-cookie-banner{display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important}' +
+    'body.zappy-checkout-page #zappy-cookie-banner{display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important}' +
+    'body.zappy-checkout-page nav.navbar:not(.zappy-catalog-menu) .nav-menu,' +
+    'body.zappy-checkout-page nav.navbar:not(.zappy-catalog-menu) .nav-links,' +
+    'body.zappy-checkout-page nav.navbar:not(.zappy-catalog-menu) .nav-cta,' +
+    'body.zappy-checkout-page nav.navbar:not(.zappy-catalog-menu) .nav-right-group .nav-menu,' +
+    'body.zappy-checkout-page .lang-switcher,' +
+    'body.zappy-checkout-page .nav-icons-right,' +
+    'body.zappy-checkout-page .nav-search-box,' +
+    'body.zappy-checkout-page .nav-search-toggle,' +
+    'body.zappy-checkout-page #mobile-search-toggle,' +
+    'body.zappy-checkout-page .mobile-search-panel,' +
+    'body.zappy-checkout-page .login-link.nav-login,' +
+    'body.zappy-checkout-page .nav-ecommerce-icons>*:not(.cart-link),' +
+    'body.zappy-checkout-page .mobile-hamburger-btn,' +
+    'body.zappy-checkout-page .mobile-toggle,' +
+    'body.zappy-checkout-page .hamburger,' +
+    'body.zappy-checkout-page .menu-toggle,' +
+    'body.zappy-checkout-page #mobileToggle,' +
+    'body.zappy-checkout-page nav.navbar:not(.zappy-catalog-menu) .phone-header-btn,' +
+    'body.zappy-checkout-page nav.navbar:not(.zappy-catalog-menu) .mobile-close-btn{display:none!important;visibility:hidden!important;pointer-events:none!important}' +
+    'body.zappy-checkout-page nav.navbar:not(.zappy-catalog-menu) .nav-container{display:flex!important;align-items:center!important;justify-content:space-between!important;width:100%!important}' +
+    'body.zappy-checkout-page .nav-brand,body.zappy-checkout-page .cart-link.nav-cart,body.zappy-checkout-page #cart-drawer-toggle{display:flex!important;visibility:visible!important;pointer-events:auto!important}' +
+    'body.zappy-checkout-page .nav-ecommerce-icons{display:inline-flex!important;align-items:center!important;margin-inline-start:auto!important}' +
+    '@media (max-width:768px){body.zappy-checkout-page nav.navbar:not(.zappy-catalog-menu) .nav-menu,body.zappy-checkout-page nav.navbar:not(.zappy-catalog-menu) .nav-menu.active,body.zappy-checkout-page nav.navbar:not(.zappy-catalog-menu) .nav-menu.open{display:none!important;visibility:hidden!important}}' +
+    'body.zappy-checkout-page .site-footer>*:not(.footer-bottom),body.zappy-checkout-page footer.site-footer>*:not(.footer-bottom){display:none!important;visibility:hidden!important}' +
+    'body.zappy-checkout-page .site-footer .footer-bottom,body.zappy-checkout-page footer.site-footer .footer-bottom{display:block!important;visibility:visible!important}' +
+    'body.zappy-checkout-page .site-footer:not(:has(.footer-bottom)),body.zappy-checkout-page footer.site-footer:not(:has(.footer-bottom)){display:none!important}';
+
+  function resolvePagePath() {
+    var pagePath = window.location.pathname || '';
+    try {
+      var pageParam = new URLSearchParams(window.location.search).get('page');
+      if (pageParam) pagePath = pageParam;
+    } catch (e) {}
+    return pagePath.toLowerCase();
+  }
+
+  function applyCheckoutFocusState() {
+    var path = resolvePagePath();
+    var isCheckoutPage = path.indexOf('/checkout') !== -1;
+    var isFocusedPage = (
+      path.indexOf('/product/') !== -1 ||
+      path === '/product' ||
+      path.indexOf('/cart') !== -1 ||
+      isCheckoutPage ||
+      path.indexOf('/order-success') !== -1 ||
+      path.indexOf('/order') !== -1
+    );
+    document.body.classList.toggle('zappy-focused-page', isFocusedPage);
+    document.body.classList.toggle('zappy-checkout-page', isCheckoutPage);
+  }
+
+  function injectCss() {
+    var existing = document.getElementById('zappy-checkout-focus-ux-css');
+    if (existing && existing.getAttribute('data-v') === '2') return;
+    if (existing) existing.remove();
+    var style = document.createElement('style');
+    style.id = 'zappy-checkout-focus-ux-css';
+    style.setAttribute('data-zappy-runtime', 'checkout-focus');
+    style.setAttribute('data-v', '2');
+    style.textContent = CSS;
+    (document.head || document.documentElement).appendChild(style);
+  }
+
+  function syncCartOpenFromDom() {
+    var drawer = document.getElementById('cart-drawer');
+    var overlay = document.getElementById('cart-drawer-overlay');
+    var isOpen = (drawer && drawer.classList.contains('active')) ||
+      (overlay && overlay.classList.contains('active'));
+    document.body.classList.toggle('zappy-cart-open', !!isOpen);
+  }
+
+  function watchCartDrawer() {
+    syncCartOpenFromDom();
+    var obs = new MutationObserver(function() { syncCartOpenFromDom(); });
+    ['cart-drawer', 'cart-drawer-overlay'].forEach(function(id) {
+      var el = document.getElementById(id);
+      if (el) obs.observe(el, { attributes: true, attributeFilter: ['class'] });
+    });
+    document.addEventListener('click', function(e) {
+      var t = e.target && e.target.closest
+        ? e.target.closest('#cart-drawer-toggle,.cart-link.nav-cart,a.nav-cart,[data-cart-toggle],.cart-drawer-close,#cart-drawer-overlay')
+        : null;
+      if (t) setTimeout(syncCartOpenFromDom, 0);
+    }, true);
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') setTimeout(syncCartOpenFromDom, 0);
+    });
+  }
+
+  function boot() {
+    injectCss();
+    applyCheckoutFocusState();
+    watchCartDrawer();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
+  window.addEventListener('popstate', function() { setTimeout(applyCheckoutFocusState, 0); });
+  setTimeout(boot, 250);
+  setTimeout(boot, 1500);
+})();
+
 
 /* ZAPPY_MOBILE_NAV_ICON_ALIGNMENT_RUNTIME */
 /* ZAPPY_MOBILE_NAV_ICON_ALIGNMENT_RUNTIME_V2 */
@@ -4808,7 +4938,7 @@ function fixContrast(){
       if (document.getElementById('zappy-mobile-nav-icon-alignment-fix')) return;
       var style = document.createElement('style');
       style.id = 'zappy-mobile-nav-icon-alignment-fix';
-      style.textContent = "\n\n/* ZAPPY_MOBILE_NAV_ICON_ALIGNMENT_FIX */\n/* ZAPPY_MOBILE_NAV_ICON_ALIGNMENT_FIX_V2 */\n/* The mobile hamburger / phone buttons are absolutely positioned. Keep the\n   navbar itself as a non-collapsing containing block so auto-margin centering\n   stays aligned even when generated mobile CSS moves every nav child out of flow. */\n@media (max-width: 768px) {\n  .navbar,\n  nav.navbar {\n    min-height: 70px !important;\n  }\n\n  .navbar > .mobile-toggle,\n  nav.navbar > .mobile-toggle,\n  .navbar .mobile-toggle,\n  nav.navbar .mobile-toggle,\n  #mobileToggle,\n  .navbar > .phone-header-btn,\n  nav.navbar > .phone-header-btn,\n  .navbar .phone-header-btn,\n  nav.navbar .phone-header-btn {\n    position: absolute !important;\n    top: 0 !important;\n    bottom: 0 !important;\n    transform: none !important;\n    margin-top: auto !important;\n    margin-bottom: auto !important;\n    align-self: center !important;\n    align-items: center !important;\n    justify-content: center !important;\n    line-height: 0 !important;\n  }\n\n  .navbar > .mobile-toggle,\n  nav.navbar > .mobile-toggle,\n  .navbar .mobile-toggle,\n  nav.navbar .mobile-toggle,\n  #mobileToggle {\n    display: flex !important;\n  }\n\n  html:not([data-zappy-site-type=\"ecommerce\"]) .navbar > .phone-header-btn,\n  html:not([data-zappy-site-type=\"ecommerce\"]) nav.navbar > .phone-header-btn,\n  html:not([data-zappy-site-type=\"ecommerce\"]) .navbar .phone-header-btn,\n  html:not([data-zappy-site-type=\"ecommerce\"]) nav.navbar .phone-header-btn {\n    display: flex !important;\n  }\n\n  html[data-zappy-site-type=\"ecommerce\"] .phone-header-btn,\n  body[data-zappy-site-type=\"ecommerce\"] .phone-header-btn,\n  html[data-zappy-site-type=\"ecommerce\"] header .phone-header-btn,\n  html[data-zappy-site-type=\"ecommerce\"] nav .phone-header-btn {\n    display: none !important;\n    visibility: hidden !important;\n    width: 0 !important;\n    height: 0 !important;\n    min-width: 0 !important;\n    overflow: hidden !important;\n  }\n}\n";
+      style.textContent = "\n\n/* ZAPPY_MOBILE_NAV_ICON_ALIGNMENT_FIX */\n/* ZAPPY_MOBILE_NAV_ICON_ALIGNMENT_FIX_V3 */\n/* The mobile hamburger / phone buttons are absolutely positioned. Keep the\n   navbar itself as a non-collapsing containing block so auto-margin centering\n   stays aligned even when generated mobile CSS moves every nav child out of flow. */\n@media (max-width: 768px) {\n  .navbar,\n  nav.navbar {\n    min-height: 70px !important;\n  }\n\n  /* Some generated RTL nav CSS sets both left:50% and right:50% on the\n     absolute .nav-brand. That collapses it to 0px wide, so the logo flows\n     left from the center instead of being centered on it. */\n  .navbar .nav-brand,\n  nav.navbar .nav-brand,\n  html[dir=\"rtl\"] .navbar .nav-brand,\n  html[dir=\"rtl\"] nav.navbar .nav-brand,\n  html[lang=\"he\"] .navbar .nav-brand,\n  html[lang=\"he\"] nav.navbar .nav-brand,\n  html[lang=\"ar\"] .navbar .nav-brand,\n  html[lang=\"ar\"] nav.navbar .nav-brand {\n    position: absolute !important;\n    left: 50% !important;\n    right: auto !important;\n    top: 50% !important;\n    width: auto !important;\n    min-width: max-content !important;\n    max-width: calc(100% - 168px) !important;\n    transform: translate(-50%, -50%) !important;\n    margin: 0 !important;\n    text-align: center !important;\n    justify-content: center !important;\n  }\n\n  .navbar .nav-brand .logo-link,\n  nav.navbar .nav-brand .logo-link,\n  .navbar .nav-brand a,\n  nav.navbar .nav-brand a {\n    display: inline-flex !important;\n    justify-content: center !important;\n    align-items: center !important;\n    margin-left: auto !important;\n    margin-right: auto !important;\n  }\n\n  .navbar > .mobile-toggle,\n  nav.navbar > .mobile-toggle,\n  .navbar .mobile-toggle,\n  nav.navbar .mobile-toggle,\n  #mobileToggle,\n  .navbar > .phone-header-btn,\n  nav.navbar > .phone-header-btn,\n  .navbar .phone-header-btn,\n  nav.navbar .phone-header-btn {\n    position: absolute !important;\n    top: 0 !important;\n    bottom: 0 !important;\n    transform: none !important;\n    margin-top: auto !important;\n    margin-bottom: auto !important;\n    align-self: center !important;\n    align-items: center !important;\n    justify-content: center !important;\n    line-height: 0 !important;\n  }\n\n  .navbar > .mobile-toggle,\n  nav.navbar > .mobile-toggle,\n  .navbar .mobile-toggle,\n  nav.navbar .mobile-toggle,\n  #mobileToggle {\n    display: flex !important;\n  }\n\n  html:not([data-zappy-site-type=\"ecommerce\"]) .navbar > .phone-header-btn,\n  html:not([data-zappy-site-type=\"ecommerce\"]) nav.navbar > .phone-header-btn,\n  html:not([data-zappy-site-type=\"ecommerce\"]) .navbar .phone-header-btn,\n  html:not([data-zappy-site-type=\"ecommerce\"]) nav.navbar .phone-header-btn {\n    display: flex !important;\n  }\n\n  html[data-zappy-site-type=\"ecommerce\"] .phone-header-btn,\n  body[data-zappy-site-type=\"ecommerce\"] .phone-header-btn,\n  html[data-zappy-site-type=\"ecommerce\"] header .phone-header-btn,\n  html[data-zappy-site-type=\"ecommerce\"] nav .phone-header-btn {\n    display: none !important;\n    visibility: hidden !important;\n    width: 0 !important;\n    height: 0 !important;\n    min-width: 0 !important;\n    overflow: hidden !important;\n  }\n}\n";
       document.head.appendChild(style);
     }
 
